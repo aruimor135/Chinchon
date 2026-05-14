@@ -1,0 +1,69 @@
+package modelCards;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.ArrayList;
+
+import org.junit.jupiter.api.Test;
+
+import modelGame.GameMode;
+
+/**
+ * Tests unitarios básicos de {@link Deck}: tamaño según modo, robo y operaciones simples.
+ */
+class DeckTest {
+
+	@Test
+	void oneDeckMode_initialSize_isForty() {
+		// Preparación
+		Deck deck = new Deck(GameMode.ONE_DECK);
+		// Ejecución
+		int initialSize = deck.size();
+		// Comprobación
+		assertEquals(40, initialSize);
+	}
+
+	@Test
+	void twoDecksMode_initialSize_isEighty() {
+		// Preparación
+		Deck deck = new Deck(GameMode.TWO_DECKS);
+		// Ejecución
+		int initialSize = deck.size();
+		// Comprobación
+		assertEquals(80, initialSize);
+	}
+
+	@Test
+	void afterDrawingOneCard_size_isReducedByOne() {
+		// Preparación
+		Deck deck = new Deck(GameMode.ONE_DECK);
+		// Ejecución
+		deck.drawCard();
+		int sizeAfterDraw = deck.size();
+		// Comprobación
+		assertEquals(39, sizeAfterDraw);
+	}
+
+	@Test
+	void newDeck_peekTop_returnsSomeCard() {
+		// Preparación
+		Deck deck = new Deck(GameMode.ONE_DECK);
+		// Ejecución
+		Card topCard = deck.peekTop();
+		// Comprobación
+		assertTrue(topCard != null);
+	}
+
+	@Test
+	void addBottom_emptyList_sizeUnchanged() {
+		// Preparación
+		Deck deck = new Deck(GameMode.ONE_DECK);
+		ArrayList<Card> emptyList = new ArrayList<>();
+		// Ejecución
+		deck.addBottom(emptyList);
+		int sizeAfterAdd = deck.size();
+		// Comprobación
+		assertEquals(40, sizeAfterAdd);
+	}
+}

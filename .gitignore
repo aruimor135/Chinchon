@@ -1,0 +1,18 @@
+# Java class files
+*.class
+
+# Eclipse files
+.metadata/
+.classpath
+.project
+.settings/
+bin/
+
+
+# VS Code
+.vscode/
+
+# Build directories
+build/
+target/
+.gradle/
