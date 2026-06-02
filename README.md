@@ -212,8 +212,6 @@ JavaDoc facilita el mantenimiento del sistema y la comprensión del código.
 
 Acceso: [Ver JavaDoc](doc/index.html)
 
-[INSERTAR CAPTURA JAVADOC]
-
 ## Autor
 Proyecto desarrollado para el módulo de Programación / Entornos de Desarrollo.
 
