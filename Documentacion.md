@@ -1,7 +1,9 @@
-# Documentación - Chinchón
+# Documentación técnica del proyecto — Juego Chinchón en Java
 
-## Índice por paquete
+# Estructura de carpetas
+El proyecto está organizado en paquetes según la responsabilidad de cada componente:
 
+```
 | Paquete | Clases |
 |---------|--------|
 | `main` | Main |
@@ -12,8 +14,12 @@
 | `modelScore` | ScoreCalculator |
 | `iA` | AIStrategy, BasicStrategy |
 | `userInterface` | ConsoleInput, ConsoleManager, GameView, Messages |
-
+```
 ---
+
+Esta separación permite una arquitectura limpia y facilita el mantenimiento del código.
+
+# Responsabilidad de los paquetes
 
 ## `main`
 
@@ -142,6 +148,10 @@
 **Función:** Enumerado de acciones posibles en un turno.  
 **Valores:** `DRAW`, `DISCARD`, `CLOSE`
 
+### PlayerFactory.java 
+**Paquete:** `modelPlayers`  
+**Función:** Creación de jugadores (Factory Pattern).
+
 ---
 
 ## `modelCombinations`
@@ -233,17 +243,92 @@
 - `showTitle(String title)` - Imprime título centrado
 - `showStandings(ArrayList<Player> players)` - Muestra clasificación
 
-### Messages.java
-**Paquete:** `userInterface`  
-**Función:** Centraliza textos de interfaz en español.  
-**Métodos:**
-- Constantes: `ASK_PLAYER_COUNT`, `ASK_PLAYER_NAME`, `GAME_TITLE`, `ERR_INVALID_NUMBER`, etc.
-- Fábricas: `handLine()`, `playerScoreLine()`, `winsWithChinchon()`, etc.
+---
+
+# UML del sistema
+
+El diagrama UML representa:
+
+- Herencia entre `Player`, `HumanPlayer` y `AIPlayer`
+- Implementación de `AIStrategy`
+- Relación entre `Game`, `Round` y `TurnManager`
+- Uso de `Deck` y `DiscardPile`
+- Dependencias entre módulos
+
+![](UML.drawio.png)
 
 ---
 
+# Patrones de diseño utilizados
 
-## Flujo de ejecución
+## Factory Pattern
+
+El proyecto implementa el patrón **Factory** mediante la clase `PlayerFactory`.
+
+Su responsabilidad consiste en encapsular la creación de objetos jugador evitando crear directamente instancias de `HumanPlayer` o `IAPlayer` desde otras partes del programa.
+
+Esto permite desacoplar la lógica de creación del flujo principal del juego y facilita futuras ampliaciones.
+
+Clases implicadas:
+
+* PlayerFactory
+* Player
+* HumanPlayer
+* IAPlayer
+
+---
+
+## Strategy Pattern
+
+La inteligencia artificial del juego utiliza el patrón **Strategy**.
+
+La interfaz `AIStrategy` define el comportamiento esperado para cualquier estrategia de IA.
+
+La implementación `BasicStrategy` contiene una estrategia concreta de toma de decisiones.
+
+Gracias a este diseño, pueden añadirse nuevas IA sin modificar la lógica interna de `IAPlayer`.
+
+Clases implicadas:
+
+* AIStrategy
+* BasicStrategy
+* IAPlayer
+
+---
+
+# Justificación técnica
+
+El proyecto ha sido diseñado siguiendo principios SOLID:
+
+- **SRP**: cada clase tiene una única responsabilidad.
+- **OCP**: extensible sin modificar código existente.
+- **DIP**: dependencias hacia abstracciones.
+
+Además, se ha buscado:
+
+- bajo acoplamiento
+- alta cohesión
+- modularidad
+
+---
+
+# Organización del proyecto
+
+El proyecto separa claramente:
+
+- lógica del juego (`modelGame`)
+- lógica de cartas (`modelCards`)
+- lógica de jugadores (`modelPlayers`)
+- IA (`iA`)
+- interfaz (`userInterface`)
+- punto de entrada (`main`)
+- puntuación (`modelScore`)
+
+Esto permite mantenimiento sencillo y escalabilidad.
+
+---
+
+# Flujo de ejecución
 
 1. `Main.main()` crea `Game`
 2. `Game.startGame()` inicia
@@ -254,3 +339,93 @@
    - Verifica cierre → aplica puntuación
    - Elimina jugadores con ≥100 puntos
 5. Determina ganador (menor puntuación)
+
+# Pruebas unitarias
+Las pruebas unitarias se encuentran fuera del directorio `src`, dentro de `test`, siguiendo buenas prácticas de organización de proyectos Java.
+
+Se han implementado tests con **JUnit 5**.
+
+## Enfoques utilizados:
+
+### Caja negra
+Se han realizado pruebas centradas en validar resultados esperados sin depender de la implementación interna.
+
+Ejemplos:
+* `DeckTest` → comprobación del tamaño correcto del mazo.
+* `SuitTest` → validación de palos disponibles.
+* `ScoreCalculatorTest` → comprobación del cálculo correcto de puntuaciones.
+
+
+### Caja blanca
+También se han realizado pruebas considerando el flujo interno del código y caminos de ejecución.
+
+Ejemplos:
+* `PlayerFactoryTest` → verificación de la creación correcta según tipo de jugador.
+* `ScoreCalculatorTest` → validación de diferentes escenarios internos de cálculo.
+
+---
+
+## Ejemplos de tests
+
+El proyecto incluye pruebas unitarias desarrolladas con **JUnit 5**, organizadas por módulos del sistema.
+
+### modelCards
+
+- `DeckTest`: valida el tamaño del mazo según el modo de juego, el robo de cartas y operaciones básicas del mazo.
+- `SuitTest`: comprueba los nombres, códigos y símbolos de los palos de la baraja.
+
+Se verifican comportamientos básicos del sistema de cartas.
+
+---
+
+### modelPlayers
+
+- `PlayerFactoryTest`: comprueba la creación correcta de jugadores humanos e IA y la asignación de nombres.
+
+Se valida el patrón Factory aplicado en la creación de jugadores.
+
+---
+
+### modelScore
+
+- `ScoreCalculatorTest`: valida el cálculo de puntos en distintas situaciones:
+  - mano vacía
+  - una sola carta
+  - cartas con distintos valores (test parametrizado)
+
+Se comprueba la lógica de puntuación del sistema.
+
+---
+
+## Organización de los tests
+Todos los tests están ubicados en la carpeta `test/` fuera de `src/`, siguiendo la estructura estándar de proyectos Java.
+
+Se utiliza JUnit 5 con:
+- Tests unitarios simples (`@Test`)
+- Tests parametrizados (`@ParameterizedTest`)
+
+Enfoque combinado:
+- Caja negra (validación de resultados)
+- Caja blanca (validación de lógica interna en métodos clave)
+
+# JavaDoc
+
+El proyecto incluye documentación JavaDoc generada automáticamente.
+
+Incluye:
+- descripción de clases
+- descripción de métodos
+- parámetros
+- valores de retorno
+
+Permite facilitar el mantenimiento y comprensión del sistema.
+
+---
+
+# Conclusión
+
+El desarrollo de este proyecto ha permitido aplicar conocimientos clave del módulo de Entornos de Desarrollo, incluyendo arquitectura del software, patrones de diseño, pruebas unitarias y documentación técnica.
+
+El resultado es un sistema estructurado, modular y escalable, que simula correctamente el juego de Chinchón y permite futuras ampliaciones como nuevas estrategias de IA o modos de juego adicionales.
+
+---

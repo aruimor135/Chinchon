@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import modelCards.Card;
 import modelCards.Rank;
@@ -37,5 +39,18 @@ class ScoreCalculatorTest {
 		int points = calculator.calculateDeadwoodPoints(hand);
 		// Comprobación
 		assertEquals(5, points);
+	}
+
+	@ParameterizedTest
+	@CsvSource({ "ONE, 1", "FIVE, 5", "KING, 12" })
+	void singleCard_calculateDeadwoodPoints_matchesRankValue(String rankName, int expectedPoints) {
+		// Preparación
+		ScoreCalculator calculator = new ScoreCalculator(new CombinationChecker());
+		ArrayList<Card> hand = new ArrayList<>();
+		hand.add(new Card(Suit.SWORDS, Rank.valueOf(rankName)));
+		// Ejecución
+		int points = calculator.calculateDeadwoodPoints(hand);
+		// Comprobación
+		assertEquals(expectedPoints, points);
 	}
 }
